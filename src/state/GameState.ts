@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 import { AssetLoader } from './loaders/AssetLoader';
 import { CameraManager } from './CameraManager';
 import { CanvasListener } from './listeners/CanvasListener';
@@ -16,7 +18,9 @@ export class GameState {
   private cameraManager: CameraManager;
   private roomManager = new RoomManager();
   // Player
-  private playerState = new PlayerState();
+  private playerState: PlayerState;
+  // Game
+  private clock = new THREE.Clock();
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -29,6 +33,9 @@ export class GameState {
     // Setup managers
     this.inputManager = new InputManager(eventListener);
     this.cameraManager = new CameraManager(this.canvasListener);
+
+    // Setup player
+    this.playerState = new PlayerState(this.cameraManager);
   }
 
   public start() {
@@ -41,10 +48,12 @@ export class GameState {
     requestAnimationFrame(this.update);
 
     // Get time from last frame
+    const deltaTime = this.clock.getDelta();
 
     // Check for collisions
 
     // Update scene
+    this.playerState.update(deltaTime);
 
     // Render
 
