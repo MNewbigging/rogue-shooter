@@ -1,6 +1,6 @@
 import { CameraManager } from './CameraManager';
 import { GameEventListener } from './listeners/GameEventListener';
-import { InputManager } from './InputManager';
+import { InputManager } from './listeners/InputManager';
 
 export class PlayerState {
   constructor(
@@ -9,5 +9,7 @@ export class PlayerState {
     private eventListener: GameEventListener
   ) {}
 
-  public update(deltaTime: number) {}
+  public update(deltaTime: number) {
+    // Check for actions, respond
+  }
 }

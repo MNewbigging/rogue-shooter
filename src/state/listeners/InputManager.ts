@@ -1,6 +1,6 @@
-import { GameEventListener } from './listeners/GameEventListener';
-import { KeyboardListener } from './listeners/KeyboardListener';
-import { MouseListener } from './listeners/MouseListener';
+import { GameEventListener } from './GameEventListener';
+import { KeyboardListener } from './KeyboardListener';
+import { MouseListener } from './MouseListener';
 
 /**
  * InputAction lists the game actions the player can take via input.

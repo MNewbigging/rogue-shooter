@@ -1,9 +1,11 @@
+import { RoomType } from '../rooms/Room';
+
 export enum GameEventType {
-  EVENT_ONE = 'event_one',
+  BUILD_ROOM = 'build-room',
 }
 
 export type GameEvent<T extends GameEventType> = Extract<
-  { type: GameEventType.EVENT_ONE },
+  { type: GameEventType.BUILD_ROOM; roomType: RoomType },
   { type: T }
 >;
 

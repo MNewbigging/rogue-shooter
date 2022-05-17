@@ -3,11 +3,12 @@ import * as THREE from 'three';
 import { AssetLoader } from './loaders/AssetLoader';
 import { CameraManager } from './CameraManager';
 import { CanvasListener } from './listeners/CanvasListener';
-import { GameEventListener } from './listeners/GameEventListener';
-import { InputManager } from './InputManager';
+import { GameEventListener, GameEventType } from './listeners/GameEventListener';
+import { InputManager } from './listeners/InputManager';
 import { PlayerState } from './PlayerState';
 import { Renderer } from './Renderer';
-import { RoomManager } from './RoomManager';
+import { RoomManager } from './rooms/RoomManager';
+import { RoomType } from './rooms/Room';
 
 export class GameState {
   // Canvas and renderer
@@ -16,7 +17,7 @@ export class GameState {
   // Managers
   private inputManager: InputManager;
   private cameraManager: CameraManager;
-  private roomManager = new RoomManager();
+  private roomManager: RoomManager;
   // Player
   private playerState: PlayerState;
   // Game
@@ -33,9 +34,17 @@ export class GameState {
     // Setup managers
     this.inputManager = new InputManager(eventListener);
     this.cameraManager = new CameraManager(this.canvasListener);
+    this.roomManager = new RoomManager(eventListener);
 
     // Setup player
     this.playerState = new PlayerState(this.cameraManager, this.inputManager, eventListener);
+
+    // Setup first room
+    eventListener.fireEvent({ type: GameEventType.BUILD_ROOM, roomType: RoomType.START });
+
+    // Put player in room
+    this.cameraManager.camera.position.y = 2;
+    this.cameraManager.camera.position.z = 2;
   }
 
   public start() {
@@ -59,6 +68,7 @@ export class GameState {
     // Check for collisions
 
     // Render
+    this.renderer.render(this.roomManager.currentRoom.scene, this.cameraManager.camera);
 
     // Post update
     this.inputManager.postUpdate();
