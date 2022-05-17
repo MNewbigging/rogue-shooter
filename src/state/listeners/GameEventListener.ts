@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-
 export enum GameEventType {
   EVENT_ONE = 'event_one',
 }
