@@ -16,17 +16,17 @@ export class CameraManager {
       0.1, // Near
       100 // Far
     );
+  }
 
-    // Pointer lock needs gesture
+  public lock() {
+    this.canvasListener.canvas.requestPointerLock();
+
+    // Listen for pointer lock exit, pause on exit
     // document.addEventListener('pointerlockchange', () => {
     //   if (document.pointerLockElement !== this.canvasListener.canvas) {
     //     // Do something on unlock
     //   }
     // });
-  }
-
-  public lock() {
-    this.canvasListener.canvas.requestPointerLock();
   }
 
   public unlock() {
