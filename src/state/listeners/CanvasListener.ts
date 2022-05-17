@@ -23,7 +23,7 @@ export class CanvasListener {
     return this._canvasHeight;
   }
 
-  public addCanvasListener(callback: ListenerCallback) {
+  public onResize(callback: ListenerCallback) {
     if (!this.canvasListeners.includes(callback)) {
       this.canvasListeners.push(callback);
     }
