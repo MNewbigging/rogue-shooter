@@ -41,7 +41,7 @@ export class KeyboardListener {
   }
 
   private readonly onKeyDown = (e: KeyboardEvent) => {
-    const key = e.key.toLocaleLowerCase();
+    const key = e.code.toLocaleLowerCase();
 
     // Ensures listeners are only called once
     if (this.pressedKeys.has(key)) {
@@ -53,6 +53,6 @@ export class KeyboardListener {
   };
 
   private readonly onKeyUp = (e: KeyboardEvent) => {
-    this.pressedKeys.delete(e.key.toLocaleLowerCase());
+    this.pressedKeys.delete(e.code.toLocaleLowerCase());
   };
 }

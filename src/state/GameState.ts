@@ -50,10 +50,13 @@ export class GameState {
     // Get time from last frame
     const deltaTime = this.clock.getDelta();
 
-    // Check for collisions
+    // Get input
+    this.inputManager.update();
 
     // Update scene
     this.playerState.update(deltaTime);
+
+    // Check for collisions
 
     // Render
 

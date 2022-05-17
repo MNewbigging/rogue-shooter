@@ -10,6 +10,8 @@ export enum InputAction {
   MOVE_BACKWARD = 'move-backward',
   STRAFE_LEFT = 'strafe-left',
   STRAFE_RIGHT = 'strafe-right',
+  JUMP = 'jump',
+  FIRE = 'fire',
 }
 
 /**
@@ -19,13 +21,20 @@ export enum InputAction {
 export class InputManager {
   private mouseListener = new MouseListener();
   private keyboardListener = new KeyboardListener();
-  private actionMap = new Map<InputAction, boolean>();
-  private realtimeActions: InputAction[] = Object.values(InputAction);
   private keybindings = new Map<InputAction, string>();
+  private keyboardActions: InputAction[] = [
+    InputAction.MOVE_BACKWARD,
+    InputAction.MOVE_FORWARD,
+    InputAction.STRAFE_LEFT,
+    InputAction.STRAFE_RIGHT,
+    InputAction.JUMP,
+  ];
+  private actionMap = new Map<InputAction, boolean>();
+  private allActions: InputAction[] = Object.values(InputAction);
 
   constructor(private eventListener: GameEventListener) {
     // Initialise action map
-    this.realtimeActions.forEach((action) => this.actionMap.set(action, false));
+    this.allActions.forEach((action) => this.actionMap.set(action, false));
     // Set default keybindings
     this.setDefaultKeybindings();
   }
@@ -35,12 +44,20 @@ export class InputManager {
   }
 
   public update() {
-    // Check if realtime actions are taking place
-    this.realtimeActions.forEach((action) => {
+    // Check if keyboard actions are taking place
+    this.keyboardActions.forEach((action) => {
+      // Keyboard bindings
       const boundKey = this.keybindings.get(action);
       const actionKeyPressed = this.keyboardListener.isKeyPressed(boundKey);
       this.actionMap.set(action, actionKeyPressed);
     });
+
+    // Check if mouse actions are taking place
+    this.actionMap.set(InputAction.FIRE, this.mouseListener.lmb);
+
+    if (this.takingAction(InputAction.MOVE_FORWARD)) {
+      console.log('moving forward');
+    }
   }
 
   public postUpdate() {
@@ -49,11 +66,10 @@ export class InputManager {
 
   private setDefaultKeybindings() {
     // TODO - provide rebind keys UI interface & logic
-
-    // WASD
-    this.keybindings.set(InputAction.MOVE_FORWARD, 'w');
-    this.keybindings.set(InputAction.MOVE_BACKWARD, 's');
-    this.keybindings.set(InputAction.STRAFE_LEFT, 'a');
-    this.keybindings.set(InputAction.STRAFE_RIGHT, 'd');
+    this.keybindings.set(InputAction.MOVE_FORWARD, 'keyw');
+    this.keybindings.set(InputAction.MOVE_BACKWARD, 'keys');
+    this.keybindings.set(InputAction.STRAFE_LEFT, 'keya');
+    this.keybindings.set(InputAction.STRAFE_RIGHT, 'keyd');
+    this.keybindings.set(InputAction.JUMP, 'space');
   }
 }
