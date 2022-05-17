@@ -38,4 +38,10 @@ html {
   pointer-events: none;
 
   font-family: 'Poppins', sans-serif;
+
+  // Center loading text
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
