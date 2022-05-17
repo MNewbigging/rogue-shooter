@@ -35,7 +35,7 @@ export class GameState {
     this.cameraManager = new CameraManager(this.canvasListener);
 
     // Setup player
-    this.playerState = new PlayerState(this.cameraManager);
+    this.playerState = new PlayerState(this.cameraManager, this.inputManager, eventListener);
   }
 
   public start() {
@@ -58,5 +58,6 @@ export class GameState {
     // Render
 
     // Post update
+    this.inputManager.postUpdate();
   };
 }
