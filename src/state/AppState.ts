@@ -1,8 +1,8 @@
 import { action, makeObservable, observable } from 'mobx';
 
-import { AssetLoader } from './state/loaders/AssetLoader';
-import { GameEventListener } from './state/listeners/GameEventListener';
-import { GameState } from './state/GameState';
+import { AssetLoader } from './loaders/AssetLoader';
+import { GameEventListener } from './listeners/GameEventListener';
+import { GameState } from './GameState';
 
 export class AppState {
   public loading = true;
@@ -31,5 +31,8 @@ export class AppState {
 
     // Ready to play
     this.loading = false;
+
+    // Start game after short delay
+    setTimeout(() => this.gameState.start(), 500);
   };
 }

@@ -13,4 +13,8 @@ export class GameState {
     // Setup canvas listener
     this.canvasListener = new CanvasListener(canvas);
   }
+
+  public start() {
+    // Start the game loop
+  }
 }
