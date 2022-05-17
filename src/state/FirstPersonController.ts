@@ -11,14 +11,68 @@ export class FirstPersonController {
   private readonly halfPi = Math.PI / 2;
   private forward = new THREE.Vector3();
   private moveSpeed = 3;
+  private deltaY = 0;
+  private gravity = 0.1;
 
-  constructor(private cameraManager: CameraManager, private inputManager: InputManager) {}
+  constructor(
+    private cameraManager: CameraManager,
+    private inputManager: InputManager,
+    private playerBounds: THREE.Mesh
+  ) {}
 
   public update(deltaTime: number) {
+    // Adhere to gravity
+
     // Look around
     this.mouseLook();
     // Move
     this.moveActions(deltaTime);
+  }
+
+  private applyGravity(deltaTime: number) {
+    /**
+     * https://stackoverflow.com/questions/48130461/how-to-make-my-character-jump-with-gravity
+     *
+     * When player lower bounds intersects a block
+     * player y becomes intersect point + height
+     *
+     * height should never change unless the player jumps, or
+     * player falls off ledge...
+     *
+     * So:
+     * - as long as player isn't intersecting on lower bounds
+     * - apply gravity, reducing y
+     *
+     * - when player intersects, move up to just outside intersection, or
+     * - maybe just inside
+     *
+     * Or:
+     * DeltaY indicates a y direction, affected by jumping and gravity
+     * - deltaY: number
+     *
+     * Always adjust y by delta in update, which is movement:
+     * - y += deltaY
+     *
+     * At time of jump, add impulse to deltaY (player will move up)
+     * - if (!isJumping && JUMP_ACTION) deltaY = 5;
+     *
+     * Always subtract gravity force from deltaY (makes jump arc)
+     * - deltaY -= gravity
+     *
+     * When touching the ground, set deltaY to 0 (y will therefore not change)
+     * - if (onGround()) deltaY = 0
+     *
+     */
+
+    // Subtract gravity from y move delta
+    this.deltaY -= this.gravity;
+
+    // If touching the ground, set y move delta to 0
+
+    // If jumping, add upward impulse value to y move delta
+
+    // Apply y movement to player
+    this.cameraManager.camera.position.y += this.deltaY;
   }
 
   private mouseLook() {

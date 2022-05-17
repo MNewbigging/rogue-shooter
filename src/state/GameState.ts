@@ -41,6 +41,10 @@ export class GameState {
 
     // Setup first room
     eventListener.fireEvent({ type: GameEventType.BUILD_ROOM, roomType: RoomType.START });
+
+    // Move player to spawn point
+    const spawn = this.roomManager.currentRoom?.playerSpawnPoint;
+    this.playerState.moveToSpawnPoint(spawn);
   }
 
   public start() {

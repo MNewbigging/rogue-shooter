@@ -10,11 +10,12 @@ export enum RoomType {
 }
 
 /**
- * A room has its own scene containing all of the props in that room.
+ * A room has its own scene containing all of the props in that room, spawn points and exits.
  */
 export class Room {
   public scene = new THREE.Scene();
   public props: Prop[] = [];
+  public playerSpawnPoint = new THREE.Vector3();
 
   constructor(public type: RoomType) {}
 
