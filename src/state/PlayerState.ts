@@ -8,7 +8,7 @@ import { InputManager } from './listeners/InputManager';
 export class PlayerState {
   // TODO - player will need a mesh to detect collisions against others
   public bounds: THREE.Mesh;
-  private fpsController: FirstPersonController;
+  public fpsController: FirstPersonController;
 
   constructor(
     private cameraManager: CameraManager,

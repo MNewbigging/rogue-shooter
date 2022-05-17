@@ -4,6 +4,8 @@ import { CameraManager } from './CameraManager';
 import { InputAction, InputManager } from './listeners/InputManager';
 
 export class FirstPersonController {
+  // Y movement delta; may be set by collision manager
+  public deltaY = 0;
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   private lookSpeed = 1.5;
   private readonly minPolarAngle = 0;
@@ -11,7 +13,7 @@ export class FirstPersonController {
   private readonly halfPi = Math.PI / 2;
   private forward = new THREE.Vector3();
   private moveSpeed = 3;
-  private deltaY = 0;
+
   private gravity = 0.1;
 
   constructor(
@@ -33,13 +35,6 @@ export class FirstPersonController {
     /**
      * https://stackoverflow.com/questions/48130461/how-to-make-my-character-jump-with-gravity
      *
-     * When player lower bounds intersects a block
-     * player y becomes intersect point + height
-     *
-     * height should never change unless the player jumps, or
-     * player falls off ledge...
-     *
-     * So:
      * - as long as player isn't intersecting on lower bounds
      * - apply gravity, reducing y
      *
