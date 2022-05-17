@@ -1,9 +1,11 @@
 import { AssetLoader } from './loaders/AssetLoader';
 import { CanvasListener } from './listeners/CanvasListener';
 import { GameEventListener } from './listeners/GameEventListener';
+import { InputManager } from './InputManager';
 
 export class GameState {
   private canvasListener: CanvasListener;
+  private inputManager = new InputManager();
 
   constructor(
     canvas: HTMLCanvasElement,
