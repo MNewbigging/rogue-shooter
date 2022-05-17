@@ -41,13 +41,12 @@ export class GameState {
 
     // Setup first room
     eventListener.fireEvent({ type: GameEventType.BUILD_ROOM, roomType: RoomType.START });
-
-    // Put player in room
-    this.cameraManager.camera.position.y = 2;
-    this.cameraManager.camera.position.z = 2;
   }
 
   public start() {
+    // Lock camera to first person
+    this.cameraManager.lock();
+
     // Start the game loop
     this.update();
   }

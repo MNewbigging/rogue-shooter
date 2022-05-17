@@ -13,5 +13,14 @@ export const App: React.FC<AppProps> = observer(({ appState }) => {
     return <div>loading</div>;
   }
 
+  // Confirm start with click
+  if (!appState.started) {
+    return (
+      <div id={'start-confirm'} onClick={appState.onClickToStart}>
+        Click to start
+      </div>
+    );
+  }
+
   return <div></div>;
 });

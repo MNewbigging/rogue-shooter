@@ -19,7 +19,7 @@ export enum InputAction {
  * which actions are being taken in real time.
  */
 export class InputManager {
-  private mouseListener = new MouseListener();
+  public mouseListener = new MouseListener();
   private keyboardListener = new KeyboardListener();
   private keybindings = new Map<InputAction, string>();
   private keyboardActions: InputAction[] = [

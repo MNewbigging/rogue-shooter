@@ -6,6 +6,7 @@ import { GameState } from './GameState';
 
 export class AppState {
   public loading = true;
+  public started = false;
   public assetLoader = new AssetLoader();
   public eventListener = new GameEventListener();
   public gameState: GameState;
@@ -14,6 +15,7 @@ export class AppState {
     makeObservable(this, {
       loading: observable,
       onLoad: action,
+      started: observable,
     });
   }
 
@@ -31,6 +33,13 @@ export class AppState {
 
     // Ready to play
     this.loading = false;
+
+    // Start game after short delay
+    //setTimeout(() => this.gameState.start(), 500);
+  };
+
+  public onClickToStart = () => {
+    this.started = true;
 
     // Start game after short delay
     setTimeout(() => this.gameState.start(), 500);
