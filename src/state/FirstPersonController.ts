@@ -8,6 +8,7 @@ export class FirstPersonController {
   public feet: THREE.Mesh;
   public dy = 0;
   public onGround = false;
+  public moveDirection = new THREE.Vector3();
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   private lookSpeed = 1.5;
   private readonly minPolarAngle = 0;
@@ -35,8 +36,14 @@ export class FirstPersonController {
   }
 
   public moveTo(pos: THREE.Vector3) {
+    // Save current position
+    const lastPos = this.cameraManager.camera.position.clone();
+
     // Set camera to the position
     this.cameraManager.camera.position.set(pos.x, pos.y, pos.z);
+
+    // Get travel direction
+    this.moveDirection = this.cameraManager.camera.position.clone().sub(lastPos).normalize();
 
     // Set feet to the same position, minus height on y
     this.feet.position.set(pos.x, pos.y - this.height, pos.z);
@@ -44,7 +51,7 @@ export class FirstPersonController {
 
   public update(deltaTime: number) {
     // Adhere to gravity
-    this.applyGravity();
+    //this.applyGravity();
     // Look around
     this.mouseLook();
     // Move
@@ -108,6 +115,11 @@ export class FirstPersonController {
       const moveStep = rightDir.multiplyScalar(moveSpeed);
       nextPosition.add(moveStep);
     }
+
+    // Apply gravity
+    this.dy -= 0.01;
+
+    nextPosition.y += this.dy;
 
     // Move to new position
     this.moveTo(nextPosition);

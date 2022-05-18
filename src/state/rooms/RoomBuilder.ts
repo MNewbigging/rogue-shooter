@@ -22,7 +22,7 @@ export class RoomBuilder {
     room.scene.add(ambientLight);
 
     // Floor
-    const floor = new Block(40, 0.1, 40, 'green');
+    const floor = new Block(40, 1, 40, 'green');
     room.addProp(floor);
 
     // Blocks
@@ -30,9 +30,9 @@ export class RoomBuilder {
     block.moveTo(new THREE.Vector3(0, 1.5, -5));
     room.addProp(block);
 
-    const b2 = new Block(10, 1, 10, 'yellow');
-    b2.moveTo(new THREE.Vector3(0, 0.5, -5));
-    room.addProp(b2);
+    // const b2 = new Block(10, 1, 10, 'yellow');
+    // b2.moveTo(new THREE.Vector3(0, 0.5, -5));
+    // room.addProp(b2);
 
     // Player spawn point
     room.playerSpawnPoint = new THREE.Vector3(0, 2, -5);
