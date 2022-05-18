@@ -20,7 +20,7 @@ export enum InputAction {
  */
 export class InputManager {
   public mouseListener = new MouseListener();
-  private keyboardListener = new KeyboardListener();
+  public keyboardListener = new KeyboardListener();
   private keybindings = new Map<InputAction, string>();
   private keyboardActions: InputAction[] = [
     InputAction.MOVE_BACKWARD,

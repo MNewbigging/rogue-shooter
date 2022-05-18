@@ -24,7 +24,7 @@ export class FirstPersonController {
 
   public update(deltaTime: number) {
     // Adhere to gravity
-    this.applyGravity();
+    //this.applyGravity();
     // Look around
     this.mouseLook();
     // Move

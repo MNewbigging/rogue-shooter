@@ -9,7 +9,7 @@ import { Room } from './rooms/Room';
  */
 export class CollisionManager {
   public checkCollisions(player: PlayerState, room: Room) {
-    this.playerToProps(player, room.props);
+    //this.playerToProps(player, room.props);
   }
 
   private playerToProps(player: PlayerState, props: Prop[]) {

@@ -12,7 +12,7 @@ export class Block extends Prop {
 
     // Blocks use box geometry
     const geom = new THREE.BoxGeometry(width, height, depth);
-    const mat = new THREE.MeshBasicMaterial();
+    const mat = new THREE.MeshNormalMaterial();
     this.model = new THREE.Mesh(geom, mat);
   }
 }

@@ -10,6 +10,7 @@ import { PlayerState } from './PlayerState';
 import { Renderer } from './Renderer';
 import { RoomManager } from './rooms/RoomManager';
 import { RoomType } from './rooms/Room';
+import { TestCube } from './TestCube';
 
 export class GameState {
   // Canvas and renderer
@@ -22,6 +23,7 @@ export class GameState {
   private collisionManager = new CollisionManager();
   // Player
   private playerState: PlayerState;
+  private testCube: TestCube;
   // Game
   private clock = new THREE.Clock();
 
@@ -46,7 +48,12 @@ export class GameState {
 
     // Move player to spawn point
     const spawn = this.roomManager.currentRoom?.playerSpawnPoint;
-    this.playerState.moveToSpawnPoint(spawn);
+    this.playerState.moveToSpawnPoint(new THREE.Vector3(0, 1, 0));
+
+    // Test cube
+    this.testCube = new TestCube(this.inputManager.keyboardListener);
+    this.testCube.moveTo(spawn);
+    this.roomManager.currentRoom.scene.add(this.testCube.cube);
   }
 
   public start() {
@@ -72,6 +79,9 @@ export class GameState {
 
     // Update scene
     this.playerState.update(deltaTime);
+
+    // Test cube
+    this.testCube.update(deltaTime, this.roomManager.currentRoom.props);
 
     // Render
     this.renderer.render(this.roomManager.currentRoom.scene, this.cameraManager.camera);
