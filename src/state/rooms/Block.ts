@@ -15,4 +15,8 @@ export class Block extends Prop {
     const mat = new THREE.MeshNormalMaterial();
     this.model = new THREE.Mesh(geom, mat);
   }
+
+  public moveTo(pos: THREE.Vector3) {
+    this.model.position.set(pos.x, pos.y, pos.z);
+  }
 }
