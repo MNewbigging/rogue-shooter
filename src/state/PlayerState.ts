@@ -17,7 +17,7 @@ export class PlayerState {
     this.fpsController = new FirstPersonController(cameraManager, inputManager);
   }
 
-  public moveToSpawnPoint(point: THREE.Vector3) {
+  public moveTo(point: THREE.Vector3) {
     this.fpsController.moveTo(point);
   }
 

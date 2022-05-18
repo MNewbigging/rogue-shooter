@@ -5,14 +5,14 @@ import { InputAction, InputManager } from './listeners/InputManager';
 
 export class FirstPersonController {
   public feet: THREE.Mesh;
-  // Y movement delta; may be set by collision manager
-  public deltaY = 0;
+  public moveDirection = new THREE.Vector3();
+  public dy = 0;
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   private lookSpeed = 1.5;
   private readonly minPolarAngle = 0;
   private readonly maxPolarAngle = Math.PI;
   private readonly halfPi = Math.PI / 2;
-  private forward = new THREE.Vector3();
+  private facing = new THREE.Vector3();
   private moveSpeed = 3;
   private height = 0.5;
   public gravity = -0.01;
@@ -22,25 +22,40 @@ export class FirstPersonController {
     this.feet = new THREE.Mesh(feetGeom);
   }
 
+  public moveBy(add: THREE.Vector3) {
+    const pos = this.cameraManager.camera.position.clone();
+    pos.add(add);
+    this.moveTo(pos);
+  }
+
+  public moveTo(pos: THREE.Vector3) {
+    // Save current position
+    const lastPos = this.cameraManager.camera.position.clone();
+
+    // Set camera to the position
+    this.cameraManager.camera.position.set(pos.x, pos.y, pos.z);
+
+    // Get travel direction from last pos
+    this.moveDirection = lastPos.sub(this.cameraManager.camera.position).normalize();
+
+    // Set feet to the same position, minus height on y
+    this.feet.position.set(pos.x, pos.y - this.height, pos.z);
+  }
+
   public update(deltaTime: number) {
     // Adhere to gravity
-    //this.applyGravity();
+    this.applyGravity();
     // Look around
     this.mouseLook();
     // Move
     this.moveActions(deltaTime);
   }
 
-  public moveTo(pos: THREE.Vector3) {
-    // Set camera to the position
-    this.cameraManager.camera.position.set(pos.x, pos.y, pos.z);
-    // Set feet to the same position, minus height on y
-    this.feet.position.set(pos.x, pos.y - this.height, pos.z);
-  }
+  private applyGravity() {
+    this.dy -= 0.1;
 
-  public addPositionY(y: number) {
-    this.cameraManager.camera.position.y += y;
-    this.feet.position.y += y;
+    this.cameraManager.camera.position.y += this.dy;
+    this.feet.position.y += this.dy;
   }
 
   private mouseLook() {
@@ -66,21 +81,21 @@ export class FirstPersonController {
     const moveSpeed = this.moveSpeed * deltaTime;
 
     // Facing direction
-    this.cameraManager.camera.getWorldDirection(this.forward);
-    this.forward.y = 0;
-    this.forward.normalize();
+    this.cameraManager.camera.getWorldDirection(this.facing);
+    this.facing.y = 0;
+    this.facing.normalize();
 
     // Right direction
-    const rightDir = this.forward.clone().cross(this.cameraManager.camera.up);
+    const rightDir = this.facing.clone().cross(this.cameraManager.camera.up);
 
     // Forward
     if (this.inputManager.takingAction(InputAction.MOVE_FORWARD)) {
-      const moveStep = this.forward.clone().multiplyScalar(moveSpeed);
+      const moveStep = this.facing.clone().multiplyScalar(moveSpeed);
       nextPosition.add(moveStep);
     }
     // Backward
     if (this.inputManager.takingAction(InputAction.MOVE_BACKWARD)) {
-      const moveStep = this.forward.clone().multiplyScalar(-moveSpeed);
+      const moveStep = this.facing.clone().multiplyScalar(-moveSpeed);
       nextPosition.add(moveStep);
     }
     // Left

@@ -9,23 +9,21 @@ import { Room } from './rooms/Room';
  */
 export class CollisionManager {
   public checkCollisions(player: PlayerState, room: Room) {
-    //this.playerToProps(player, room.props);
+    this.playerToProps(player, room.props);
   }
 
   private playerToProps(player: PlayerState, props: Prop[]) {
-    // Handles player gravity
-    player.fpsController.gravity = -0.01;
-
     for (const prop of props) {
-      // Test intersection with player's feet
+      // Player's feet to ground
       const propBox = new THREE.Box3().setFromObject(prop.model);
       const feetBox = new THREE.Box3().setFromObject(player.fpsController.feet);
-
       if (feetBox.intersectsBox(propBox)) {
-        console.log('intersects');
-        // Ignore gravity this frame
-        player.fpsController.gravity = 0;
-        // Need to move player up outside of intersect radius
+        // Get intersection depth
+        const depth = propBox.max.y - feetBox.min.y;
+        // Move upwards by depth
+        const moveStep = new THREE.Vector3(0, 1, 0).multiplyScalar(depth);
+        player.fpsController.moveBy(moveStep);
+        player.fpsController.dy = 0;
       }
     }
   }

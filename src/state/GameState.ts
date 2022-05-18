@@ -48,7 +48,7 @@ export class GameState {
 
     // Move player to spawn point
     const spawn = this.roomManager.currentRoom?.playerSpawnPoint;
-    this.playerState.moveToSpawnPoint(new THREE.Vector3(0, 1, 0));
+    this.playerState.moveTo(new THREE.Vector3(0, 50, 0));
 
     // Test cube
     this.testCube = new TestCube(this.inputManager.keyboardListener);
@@ -74,14 +74,14 @@ export class GameState {
     // Get input
     this.inputManager.update();
 
-    // Check for collisions
-    this.collisionManager.checkCollisions(this.playerState, this.roomManager.currentRoom);
-
     // Update scene
     this.playerState.update(deltaTime);
 
     // Test cube
     this.testCube.update(deltaTime, this.roomManager.currentRoom.props);
+
+    // Check for collisions
+    this.collisionManager.checkCollisions(this.playerState, this.roomManager.currentRoom);
 
     // Render
     this.renderer.render(this.roomManager.currentRoom.scene, this.cameraManager.camera);
