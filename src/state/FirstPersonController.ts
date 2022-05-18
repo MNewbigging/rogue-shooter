@@ -6,7 +6,6 @@ import { InputAction, InputManager } from './listeners/InputManager';
 
 export class FirstPersonController {
   public feet: THREE.Mesh;
-  public moveDirection = new THREE.Vector3();
   public dy = 0;
   public onGround = false;
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
@@ -16,7 +15,7 @@ export class FirstPersonController {
   private readonly halfPi = Math.PI / 2;
   private facing = new THREE.Vector3();
   private moveSpeed = 3;
-  private height = 0.5;
+  private height = 1;
 
   constructor(
     private cameraManager: CameraManager,
@@ -36,14 +35,8 @@ export class FirstPersonController {
   }
 
   public moveTo(pos: THREE.Vector3) {
-    // Save current position
-    const lastPos = this.cameraManager.camera.position.clone();
-
     // Set camera to the position
     this.cameraManager.camera.position.set(pos.x, pos.y, pos.z);
-
-    // Get travel direction from last pos
-    this.moveDirection = lastPos.sub(this.cameraManager.camera.position).normalize();
 
     // Set feet to the same position, minus height on y
     this.feet.position.set(pos.x, pos.y - this.height, pos.z);
@@ -59,7 +52,7 @@ export class FirstPersonController {
   }
 
   private applyGravity() {
-    this.dy -= 0.1;
+    this.dy -= 0.01;
 
     this.cameraManager.camera.position.y += this.dy;
     this.feet.position.y += this.dy;
@@ -122,7 +115,7 @@ export class FirstPersonController {
 
   private onJump = () => {
     if (this.onGround) {
-      this.dy = 1;
+      this.dy = 0.2;
     }
   };
 }
