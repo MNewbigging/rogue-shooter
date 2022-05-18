@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { AssetLoader } from './loaders/AssetLoader';
 import { CameraManager } from './CameraManager';
 import { CanvasListener } from './listeners/CanvasListener';
+import { CollisionManager } from './CollisionManager';
 import { GameEventListener, GameEventType } from './listeners/GameEventListener';
 import { InputManager } from './listeners/InputManager';
 import { PlayerState } from './PlayerState';
@@ -18,6 +19,7 @@ export class GameState {
   private inputManager: InputManager;
   private cameraManager: CameraManager;
   private roomManager: RoomManager;
+  private collisionManager = new CollisionManager();
   // Player
   private playerState: PlayerState;
   // Game
@@ -65,10 +67,11 @@ export class GameState {
     // Get input
     this.inputManager.update();
 
+    // Check for collisions
+    this.collisionManager.checkCollisions(this.playerState, this.roomManager.currentRoom);
+
     // Update scene
     this.playerState.update(deltaTime);
-
-    // Check for collisions
 
     // Render
     this.renderer.render(this.roomManager.currentRoom.scene, this.cameraManager.camera);

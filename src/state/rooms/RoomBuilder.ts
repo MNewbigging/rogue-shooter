@@ -26,7 +26,7 @@ export class RoomBuilder {
     room.addProp(floor);
 
     // Player spawn point
-    room.playerSpawnPoint = new THREE.Vector3(0, 0.3, 0);
+    room.playerSpawnPoint = new THREE.Vector3(0, 1, 0);
 
     return room;
   }

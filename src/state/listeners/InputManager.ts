@@ -54,10 +54,6 @@ export class InputManager {
 
     // Check if mouse actions are taking place
     this.actionMap.set(InputAction.FIRE, this.mouseListener.lmb);
-
-    if (this.takingAction(InputAction.MOVE_FORWARD)) {
-      console.log('moving forward');
-    }
   }
 
   public postUpdate() {

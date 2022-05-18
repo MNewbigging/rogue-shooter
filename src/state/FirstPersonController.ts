@@ -4,6 +4,7 @@ import { CameraManager } from './CameraManager';
 import { InputAction, InputManager } from './listeners/InputManager';
 
 export class FirstPersonController {
+  public feet: THREE.Mesh;
   // Y movement delta; may be set by collision manager
   public deltaY = 0;
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
@@ -13,25 +14,36 @@ export class FirstPersonController {
   private readonly halfPi = Math.PI / 2;
   private forward = new THREE.Vector3();
   private moveSpeed = 3;
+  private height = 0.5;
+  public gravity = -0.01;
 
-  private gravity = 0.1;
-
-  constructor(
-    private cameraManager: CameraManager,
-    private inputManager: InputManager,
-    private playerBounds: THREE.Mesh
-  ) {}
+  constructor(private cameraManager: CameraManager, private inputManager: InputManager) {
+    const feetGeom = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+    this.feet = new THREE.Mesh(feetGeom);
+  }
 
   public update(deltaTime: number) {
     // Adhere to gravity
-
+    this.applyGravity();
     // Look around
     this.mouseLook();
     // Move
     this.moveActions(deltaTime);
   }
 
-  private applyGravity(deltaTime: number) {
+  public moveTo(pos: THREE.Vector3) {
+    // Set camera to the position
+    this.cameraManager.camera.position.set(pos.x, pos.y, pos.z);
+    // Set feet to the same position, minus height on y
+    this.feet.position.set(pos.x, pos.y - this.height, pos.z);
+  }
+
+  public addPositionY(y: number) {
+    this.cameraManager.camera.position.y += y;
+    this.feet.position.y += y;
+  }
+
+  private applyGravity() {
     /**
      * https://stackoverflow.com/questions/48130461/how-to-make-my-character-jump-with-gravity
      *
@@ -67,7 +79,7 @@ export class FirstPersonController {
     // If jumping, add upward impulse value to y move delta
 
     // Apply y movement to player
-    this.cameraManager.camera.position.y += this.deltaY;
+    this.addPositionY(this.deltaY);
   }
 
   private mouseLook() {
@@ -119,7 +131,7 @@ export class FirstPersonController {
       nextPosition.add(moveStep);
     }
 
-    // Apply movement
-    this.cameraManager.camera.position.set(nextPosition.x, nextPosition.y, nextPosition.z);
+    // Move to new position
+    this.moveTo(nextPosition);
   }
 }
