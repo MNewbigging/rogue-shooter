@@ -43,45 +43,6 @@ export class FirstPersonController {
     this.feet.position.y += y;
   }
 
-  private applyGravity() {
-    /**
-     * https://stackoverflow.com/questions/48130461/how-to-make-my-character-jump-with-gravity
-     *
-     * - as long as player isn't intersecting on lower bounds
-     * - apply gravity, reducing y
-     *
-     * - when player intersects, move up to just outside intersection, or
-     * - maybe just inside
-     *
-     * Or:
-     * DeltaY indicates a y direction, affected by jumping and gravity
-     * - deltaY: number
-     *
-     * Always adjust y by delta in update, which is movement:
-     * - y += deltaY
-     *
-     * At time of jump, add impulse to deltaY (player will move up)
-     * - if (!isJumping && JUMP_ACTION) deltaY = 5;
-     *
-     * Always subtract gravity force from deltaY (makes jump arc)
-     * - deltaY -= gravity
-     *
-     * When touching the ground, set deltaY to 0 (y will therefore not change)
-     * - if (onGround()) deltaY = 0
-     *
-     */
-
-    // Subtract gravity from y move delta
-    this.deltaY -= this.gravity;
-
-    // If touching the ground, set y move delta to 0
-
-    // If jumping, add upward impulse value to y move delta
-
-    // Apply y movement to player
-    this.addPositionY(this.deltaY);
-  }
-
   private mouseLook() {
     // Mouse movement delta
     const movement = this.inputManager.mouseListener.movement;
@@ -106,6 +67,8 @@ export class FirstPersonController {
 
     // Facing direction
     this.cameraManager.camera.getWorldDirection(this.forward);
+    this.forward.y = 0;
+    this.forward.normalize();
 
     // Right direction
     const rightDir = this.forward.clone().cross(this.cameraManager.camera.up);

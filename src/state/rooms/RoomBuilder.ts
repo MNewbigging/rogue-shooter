@@ -22,13 +22,17 @@ export class RoomBuilder {
     room.scene.add(ambientLight);
 
     // Floor
-    const floor = new Block(20, 0.1, 20);
+    const floor = new Block(40, 0.1, 40);
     room.addProp(floor);
 
-    // Block
+    // Blocks
     const block = new Block(3, 1, 3);
-    block.moveTo(new THREE.Vector3(0, 0.5, -5));
+    block.moveTo(new THREE.Vector3(0, 1.5, -5));
     room.addProp(block);
+
+    const b2 = new Block(10, 1, 10);
+    b2.moveTo(new THREE.Vector3(0, 0.5, -5));
+    room.addProp(b2);
 
     // Player spawn point
     room.playerSpawnPoint = new THREE.Vector3(0, 2, -5);

@@ -12,7 +12,7 @@ export class TestCube {
   public dy = 0;
   public dz = 0;
   public gravity = 0.1;
-  public drag = 0.5;
+  public drag = 0.3;
   public onGround = false;
 
   constructor(private keyboardListener: KeyboardListener) {
@@ -101,6 +101,6 @@ export class TestCube {
   };
 
   private moveZ = () => {
-    this.dz = -5;
+    this.dz = 5;
   };
 }
