@@ -22,15 +22,15 @@ export class RoomBuilder {
     room.scene.add(ambientLight);
 
     // Floor
-    const floor = new Block(40, 0.1, 40);
+    const floor = new Block(40, 0.1, 40, 'green');
     room.addProp(floor);
 
     // Blocks
-    const block = new Block(3, 1, 3);
+    const block = new Block(3, 1, 3, 'blue');
     block.moveTo(new THREE.Vector3(0, 1.5, -5));
     room.addProp(block);
 
-    const b2 = new Block(10, 1, 10);
+    const b2 = new Block(10, 1, 10, 'yellow');
     b2.moveTo(new THREE.Vector3(0, 0.5, -5));
     room.addProp(b2);
 

@@ -48,7 +48,7 @@ export class GameState {
 
     // Move player to spawn point
     const spawn = this.roomManager.currentRoom?.playerSpawnPoint;
-    this.playerState.moveTo(new THREE.Vector3(0, 50, 0));
+    this.playerState.moveTo(new THREE.Vector3(0, 100, 0));
 
     // Test cube
     this.testCube = new TestCube(this.inputManager.keyboardListener);

@@ -14,7 +14,7 @@ export class PlayerState {
     private eventListener: GameEventListener
   ) {
     // Setup controls
-    this.fpsController = new FirstPersonController(cameraManager, inputManager);
+    this.fpsController = new FirstPersonController(cameraManager, inputManager, eventListener);
   }
 
   public moveTo(point: THREE.Vector3) {

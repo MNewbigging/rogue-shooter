@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 
 import { CameraManager } from './CameraManager';
+import { GameEventListener, GameEventType } from './listeners/GameEventListener';
 import { InputAction, InputManager } from './listeners/InputManager';
 
 export class FirstPersonController {
   public feet: THREE.Mesh;
   public moveDirection = new THREE.Vector3();
   public dy = 0;
+  public onGround = false;
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   private lookSpeed = 1.5;
   private readonly minPolarAngle = 0;
@@ -15,11 +17,16 @@ export class FirstPersonController {
   private facing = new THREE.Vector3();
   private moveSpeed = 3;
   private height = 0.5;
-  public gravity = -0.01;
 
-  constructor(private cameraManager: CameraManager, private inputManager: InputManager) {
-    const feetGeom = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+  constructor(
+    private cameraManager: CameraManager,
+    private inputManager: InputManager,
+    private eventListener: GameEventListener
+  ) {
+    const feetGeom = new THREE.BoxGeometry(0.3, 0.5, 0.3);
     this.feet = new THREE.Mesh(feetGeom);
+
+    eventListener.on(GameEventType.PLAYER_JUMP, this.onJump);
   }
 
   public moveBy(add: THREE.Vector3) {
@@ -112,4 +119,10 @@ export class FirstPersonController {
     // Move to new position
     this.moveTo(nextPosition);
   }
+
+  private onJump = () => {
+    if (this.onGround) {
+      this.dy = 1;
+    }
+  };
 }

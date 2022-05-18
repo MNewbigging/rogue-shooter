@@ -1,4 +1,4 @@
-import { GameEventListener } from './GameEventListener';
+import { GameEventListener, GameEventType } from './GameEventListener';
 import { KeyboardListener } from './KeyboardListener';
 import { MouseListener } from './MouseListener';
 
@@ -27,7 +27,6 @@ export class InputManager {
     InputAction.MOVE_FORWARD,
     InputAction.STRAFE_LEFT,
     InputAction.STRAFE_RIGHT,
-    InputAction.JUMP,
   ];
   private actionMap = new Map<InputAction, boolean>();
   private allActions: InputAction[] = Object.values(InputAction);
@@ -37,6 +36,8 @@ export class InputManager {
     this.allActions.forEach((action) => this.actionMap.set(action, false));
     // Set default keybindings
     this.setDefaultKeybindings();
+    // Assign hotkey callbacks
+    this.assignKeyListeners();
   }
 
   public takingAction(action: InputAction) {
@@ -67,5 +68,13 @@ export class InputManager {
     this.keybindings.set(InputAction.STRAFE_LEFT, 'keya');
     this.keybindings.set(InputAction.STRAFE_RIGHT, 'keyd');
     this.keybindings.set(InputAction.JUMP, 'space');
+  }
+
+  private assignKeyListeners() {
+    // Jump
+    const jumpKey = this.keybindings.get(InputAction.JUMP);
+    this.keyboardListener.on(jumpKey, () => {
+      this.eventListener.fireEvent({ type: GameEventType.PLAYER_JUMP });
+    });
   }
 }

@@ -7,12 +7,12 @@ import { Prop } from './Prop';
  * pillars or other obstacles.
  */
 export class Block extends Prop {
-  constructor(width: number, height: number, depth: number) {
+  constructor(width: number, height: number, depth: number, color: string) {
     super();
 
     // Blocks use box geometry
     const geom = new THREE.BoxGeometry(width, height, depth);
-    const mat = new THREE.MeshNormalMaterial();
+    const mat = new THREE.MeshBasicMaterial({ color });
     this.model = new THREE.Mesh(geom, mat);
   }
 

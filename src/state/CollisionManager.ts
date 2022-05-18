@@ -13,6 +13,9 @@ export class CollisionManager {
   }
 
   private playerToProps(player: PlayerState, props: Prop[]) {
+    // Reset
+    player.fpsController.onGround = false;
+
     for (const prop of props) {
       // Player's feet to ground
       const propBox = new THREE.Box3().setFromObject(prop.model);
@@ -24,6 +27,7 @@ export class CollisionManager {
         const moveStep = new THREE.Vector3(0, 1, 0).multiplyScalar(depth);
         player.fpsController.moveBy(moveStep);
         player.fpsController.dy = 0;
+        player.fpsController.onGround = true;
       }
     }
   }
