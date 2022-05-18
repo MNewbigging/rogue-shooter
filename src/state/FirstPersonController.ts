@@ -15,7 +15,7 @@ export class FirstPersonController {
   private readonly halfPi = Math.PI / 2;
   private facing = new THREE.Vector3();
   private moveSpeed = 3;
-  private height = 1;
+  private height = 0.8;
 
   constructor(
     private cameraManager: CameraManager,
