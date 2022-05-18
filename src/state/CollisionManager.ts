@@ -48,15 +48,18 @@ export class CollisionManager {
         const colNormal = player.fpsController.moveDirection.clone().multiplyScalar(-1);
 
         const moveStep = colNormal.multiply(intDepth);
-        if (moveStep.x !== 0) {
-          console.log('yes');
-        }
 
         player.fpsController.moveBy(moveStep);
 
         // TODO - work out when hit the ground
         player.fpsController.dy = 0;
         player.fpsController.onGround = true;
+
+        // Make Box3 from itnersection depth stuff
+        // get its center
+        // raycast from player center to box3 center
+        // get ray.intersection.face.normal
+        // use that instead of colNomral aboev
       }
     }
   }
