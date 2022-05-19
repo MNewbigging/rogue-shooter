@@ -23,7 +23,7 @@ export class GameState {
   private collisionManager = new CollisionManager();
   // Player
   private playerState: PlayerState;
-  private testCube: TestCube;
+  //private testCube: TestCube;
   // Game
   private clock = new THREE.Clock();
 
@@ -46,14 +46,15 @@ export class GameState {
     // Setup first room
     eventListener.fireEvent({ type: GameEventType.BUILD_ROOM, roomType: RoomType.START });
 
-    // Move player to spawn point
+    // Move player to spawn point and put collider in the scene
     const spawn = this.roomManager.currentRoom?.playerSpawnPoint;
     this.playerState.moveTo(new THREE.Vector3(0, 100, 0));
+    this.roomManager.currentRoom.scene.add(this.playerState.fpsController.collider);
 
     // Test cube
-    this.testCube = new TestCube(this.inputManager.keyboardListener);
-    this.testCube.moveTo(spawn);
-    this.roomManager.currentRoom.scene.add(this.testCube.cube);
+    // this.testCube = new TestCube(this.inputManager.keyboardListener);
+    // this.testCube.moveTo(spawn);
+    // this.roomManager.currentRoom.scene.add(this.testCube.cube);
   }
 
   public start() {
@@ -78,7 +79,7 @@ export class GameState {
     this.playerState.update(deltaTime);
 
     // Test cube
-    this.testCube.update(deltaTime, this.roomManager.currentRoom.props);
+    //this.testCube.update(deltaTime, this.roomManager.currentRoom.props);
 
     // Check for collisions
     this.collisionManager.checkCollisions(this.playerState, this.roomManager.currentRoom);

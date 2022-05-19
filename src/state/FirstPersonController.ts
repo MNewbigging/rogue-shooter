@@ -5,64 +5,50 @@ import { GameEventListener, GameEventType } from './listeners/GameEventListener'
 import { InputAction, InputManager } from './listeners/InputManager';
 
 export class FirstPersonController {
-  public feet: THREE.Mesh;
+  //public feet: THREE.Mesh;
+  public collider: THREE.Mesh;
   public dy = 0;
   public onGround = false;
-  public moveDirection = new THREE.Vector3();
+  public velocity = new THREE.Vector3();
+  private direction = new THREE.Vector3();
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   private lookSpeed = 1.5;
   private readonly minPolarAngle = 0;
   private readonly maxPolarAngle = Math.PI;
   private readonly halfPi = Math.PI / 2;
-  private facing = new THREE.Vector3();
   private moveSpeed = 3;
-  private height = 0.8;
+  private height = 0.2;
 
   constructor(
     private cameraManager: CameraManager,
     private inputManager: InputManager,
     private eventListener: GameEventListener
   ) {
-    const feetGeom = new THREE.BoxGeometry(0.3, 0.5, 0.3);
-    this.feet = new THREE.Mesh(feetGeom);
+    // Create player capsule collider
+    const capGeom = new THREE.CapsuleGeometry(1, 1, 4, 8);
+    this.collider = new THREE.Mesh(capGeom);
 
     eventListener.on(GameEventType.PLAYER_JUMP, this.onJump);
   }
 
-  public moveBy(add: THREE.Vector3) {
-    const pos = this.cameraManager.camera.position.clone();
-    pos.add(add);
-    this.moveTo(pos);
-  }
-
   public moveTo(pos: THREE.Vector3) {
-    // Save current position
-    const lastPos = this.cameraManager.camera.position.clone();
+    // Move player collider
+    this.collider.position.set(pos.x, pos.y, pos.z);
 
-    // Set camera to the position
-    this.cameraManager.camera.position.set(pos.x, pos.y, pos.z);
+    // Set camera to collider pos, plus height
+    const camPos = this.collider.position.clone();
+    camPos.y += this.height;
 
-    // Get travel direction
-    this.moveDirection = this.cameraManager.camera.position.clone().sub(lastPos).normalize();
-
-    // Set feet to the same position, minus height on y
-    this.feet.position.set(pos.x, pos.y - this.height, pos.z);
+    this.cameraManager.camera.position.set(camPos.x, camPos.y, camPos.z);
   }
 
   public update(deltaTime: number) {
-    // Adhere to gravity
-    //this.applyGravity();
     // Look around
     this.mouseLook();
-    // Move
+    // Input actions
     this.moveActions(deltaTime);
-  }
-
-  private applyGravity() {
-    this.dy -= 0.01;
-
-    this.cameraManager.camera.position.y += this.dy;
-    this.feet.position.y += this.dy;
+    // Movement
+    this.move();
   }
 
   private mouseLook() {
@@ -80,54 +66,62 @@ export class FirstPersonController {
     );
     // Update camera rotation
     this.cameraManager.camera.quaternion.setFromEuler(this.lookEuler);
+
+    // Update facing direction for forward movement
+    this.cameraManager.camera.getWorldDirection(this.direction);
+    this.direction.y = 0;
+    this.direction.normalize();
   }
 
   private moveActions(deltaTime: number) {
-    const nextPosition = this.cameraManager.camera.position.clone();
-
     const moveSpeed = this.moveSpeed * deltaTime;
 
-    // Facing direction
-    this.cameraManager.camera.getWorldDirection(this.facing);
-    this.facing.y = 0;
-    this.facing.normalize();
-
     // Right direction
-    const rightDir = this.facing.clone().cross(this.cameraManager.camera.up);
+    const rightDir = this.direction.clone().cross(this.cameraManager.camera.up);
 
     // Forward
     if (this.inputManager.takingAction(InputAction.MOVE_FORWARD)) {
-      const moveStep = this.facing.clone().multiplyScalar(moveSpeed);
-      nextPosition.add(moveStep);
+      const moveStep = this.direction.clone().multiplyScalar(moveSpeed);
+
+      // Add forward impulse
+      this.velocity.add(moveStep);
     }
     // Backward
     if (this.inputManager.takingAction(InputAction.MOVE_BACKWARD)) {
-      const moveStep = this.facing.clone().multiplyScalar(-moveSpeed);
-      nextPosition.add(moveStep);
+      const moveStep = this.direction.clone().multiplyScalar(-moveSpeed);
+
+      // Add backward impulse
+      this.velocity.add(moveStep);
     }
     // Left
     if (this.inputManager.takingAction(InputAction.STRAFE_LEFT)) {
       const moveStep = rightDir.multiplyScalar(-moveSpeed);
-      nextPosition.add(moveStep);
+
+      // Add left impulse
+      this.velocity.add(moveStep);
     }
     // Right
     if (this.inputManager.takingAction(InputAction.STRAFE_RIGHT)) {
       const moveStep = rightDir.multiplyScalar(moveSpeed);
-      nextPosition.add(moveStep);
+
+      // Add right impulse
+      this.velocity.add(moveStep);
     }
+  }
 
-    // Apply gravity
-    this.dy -= 0.01;
+  private move() {
+    // Fall with gravity
+    this.velocity.y -= 0.01;
 
-    nextPosition.y += this.dy;
+    // Velocity gives the next position to move to
+    const nextPos = this.collider.position.clone().add(this.velocity);
 
-    // Move to new position
-    this.moveTo(nextPosition);
+    this.moveTo(nextPos);
   }
 
   private onJump = () => {
     if (this.onGround) {
-      this.dy = 0.2;
+      this.velocity.y = 0.2;
     }
   };
 }

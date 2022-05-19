@@ -12,55 +12,57 @@ export class CollisionManager {
     this.playerToProps(player, room.props);
   }
 
-  private playerToProps(player: PlayerState, props: Prop[]) {
-    // Reset
-    player.fpsController.onGround = false;
+  private playerToProps(player: PlayerState, props: Prop[]) {}
 
-    for (const prop of props) {
-      // Player's feet to ground
-      const propBox = new THREE.Box3().setFromObject(prop.model);
-      const feetBox = new THREE.Box3().setFromObject(player.fpsController.feet);
-      if (feetBox.intersectsBox(propBox)) {
-        // // Get intersection depth
-        // const depth = propBox.max.y - feetBox.min.y;
-        // // Move upwards by depth
-        // const moveStep = new THREE.Vector3(0, 1, 0).multiplyScalar(depth);
-        // player.fpsController.moveBy(moveStep);
-        // player.fpsController.dy = 0;
-        // player.fpsController.onGround = true;
+  // private playerToProps(player: PlayerState, props: Prop[]) {
+  //   // Reset
+  //   player.fpsController.onGround = false;
 
-        // Intersection depth
-        const intMin = new THREE.Vector3(
-          Math.max(propBox.min.x, feetBox.min.x),
-          Math.max(propBox.min.y, feetBox.min.y),
-          Math.max(propBox.min.z, feetBox.min.z)
-        );
+  //   for (const prop of props) {
+  //     // Player's feet to ground
+  //     const propBox = new THREE.Box3().setFromObject(prop.model);
+  //     const feetBox = new THREE.Box3().setFromObject(player.fpsController.feet);
+  //     if (feetBox.intersectsBox(propBox)) {
+  //       // // Get intersection depth
+  //       // const depth = propBox.max.y - feetBox.min.y;
+  //       // // Move upwards by depth
+  //       // const moveStep = new THREE.Vector3(0, 1, 0).multiplyScalar(depth);
+  //       // player.fpsController.moveBy(moveStep);
+  //       // player.fpsController.dy = 0;
+  //       // player.fpsController.onGround = true;
 
-        const intMax = new THREE.Vector3(
-          Math.min(propBox.max.x, feetBox.max.x),
-          Math.min(propBox.max.y, feetBox.max.y),
-          Math.min(propBox.max.z, feetBox.max.z)
-        );
+  //       // Intersection depth
+  //       const intMin = new THREE.Vector3(
+  //         Math.max(propBox.min.x, feetBox.min.x),
+  //         Math.max(propBox.min.y, feetBox.min.y),
+  //         Math.max(propBox.min.z, feetBox.min.z)
+  //       );
 
-        const intDepth = new THREE.Vector3().subVectors(intMax, intMin);
+  //       const intMax = new THREE.Vector3(
+  //         Math.min(propBox.max.x, feetBox.max.x),
+  //         Math.min(propBox.max.y, feetBox.max.y),
+  //         Math.min(propBox.max.z, feetBox.max.z)
+  //       );
 
-        // Collision normal - reverse of player's velocity normal
-        const colNormal = player.fpsController.moveDirection.clone().multiplyScalar(-1);
+  //       const intDepth = new THREE.Vector3().subVectors(intMax, intMin);
 
-        const moveStep = colNormal.multiply(intDepth);
+  //       // Collision normal - reverse of player's velocity normal
+  //       const colNormal = player.fpsController.moveDirection.clone().multiplyScalar(-1);
 
-        player.fpsController.moveBy(moveStep);
+  //       const moveStep = colNormal.multiply(intDepth);
 
-        // TODO - work out when hit the ground
-        player.fpsController.dy = 0;
-        player.fpsController.onGround = true;
+  //       player.fpsController.moveBy(moveStep);
 
-        // Make Box3 from itnersection depth stuff
-        // get its center
-        // raycast from player center to box3 center
-        // get ray.intersection.face.normal
-        // use that instead of colNomral aboev
-      }
-    }
-  }
+  //       // TODO - work out when hit the ground
+  //       player.fpsController.dy = 0;
+  //       player.fpsController.onGround = true;
+
+  //       // Make Box3 from itnersection depth stuff
+  //       // get its center
+  //       // raycast from player center to box3 center
+  //       // get ray.intersection.face.normal
+  //       // use that instead of colNomral aboev
+  //     }
+  //   }
+  // }
 }

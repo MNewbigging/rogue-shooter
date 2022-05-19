@@ -26,9 +26,9 @@ export class RoomBuilder {
     room.addProp(floor);
 
     // Blocks
-    const block = new Block(3, 1, 3, 'blue');
-    block.moveTo(new THREE.Vector3(0, 1.5, -5));
-    room.addProp(block);
+    // const block = new Block(3, 1, 3, 'blue');
+    // block.moveTo(new THREE.Vector3(0, 1.5, -5));
+    // room.addProp(block);
 
     // const b2 = new Block(10, 1, 10, 'yellow');
     // b2.moveTo(new THREE.Vector3(0, 0.5, -5));
