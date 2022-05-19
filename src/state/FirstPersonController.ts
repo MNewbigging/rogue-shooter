@@ -6,11 +6,11 @@ import { InputAction, InputManager } from './listeners/InputManager';
 
 export class FirstPersonController {
   //public feet: THREE.Mesh;
+  public radius = 1;
   public collider: THREE.Mesh;
-  public dy = 0;
   public onGround = false;
   public velocity = new THREE.Vector3();
-  private direction = new THREE.Vector3();
+  public direction = new THREE.Vector3();
   private lookEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   private lookSpeed = 1.5;
   private readonly minPolarAngle = 0;
@@ -25,8 +25,17 @@ export class FirstPersonController {
     private eventListener: GameEventListener
   ) {
     // Create player capsule collider
-    const capGeom = new THREE.CapsuleGeometry(1, 1, 4, 8);
+    const capGeom = new THREE.CapsuleGeometry(this.radius, 1, 4, 8);
     this.collider = new THREE.Mesh(capGeom);
+    this.collider.name = 'collider';
+
+    // Debug
+    const box = new THREE.Box3().setFromObject(this.collider);
+    console.log('capsule aabb', box);
+
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    console.log('capsule aabb size', size);
 
     eventListener.on(GameEventType.PLAYER_JUMP, this.onJump);
   }
