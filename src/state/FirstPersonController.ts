@@ -129,8 +129,6 @@ export class FirstPersonController {
   }
 
   private onJump = () => {
-    if (this.onGround) {
-      this.velocity.y = 0.2;
-    }
+    this.velocity.y = 0.2;
   };
 }
