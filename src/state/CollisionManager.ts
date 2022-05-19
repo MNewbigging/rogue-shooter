@@ -67,17 +67,26 @@ export class CollisionManager {
 
       // Get intersection depth
       const r = player.fpsController.radius;
-      let depth = Math.abs(intersection.distance - r);
-      //depth *= -1; // because if intersecting, depth is less than radius
+      const depth = Math.abs(intersection.distance - r);
 
       // Get collision normal
       const colNormal = intersection.face.normal;
 
-      // Move along collision normal by depth
-      const moveStep = colNormal.multiplyScalar(depth);
-      player.fpsController.velocity.add(moveStep);
+      // Modify player velocity to slide along surface
+      const velocityLength = player.fpsController.velocity.length();
+      const velocityNorm = player.fpsController.velocity.clone().normalize();
 
-      // Should also lower/clear player velocity - but how much? Which components?
+      const velDotColNorm = velocityNorm.dot(colNormal);
+      const undesiredMotion = colNormal.clone().multiplyScalar(velDotColNorm);
+
+      const deisredMotion = velocityNorm.clone().sub(undesiredMotion);
+
+      player.fpsController.velocity = deisredMotion.multiplyScalar(velocityLength);
+
+      // Move outside intersection by translating along collision normal by depth
+      const moveStep = colNormal.multiplyScalar(depth);
+      const movePos = player.fpsController.collider.position.clone().add(moveStep.addScalar(0.001));
+      player.fpsController.moveTo(movePos);
     }
   }
 
