@@ -13,3 +13,7 @@ const root = createRoot(document.getElementById('ui-root'));
 root.render(<App appState={appState} />);
 
 appState.loadGame();
+
+if (module.hot) {
+  module.hot.accept();
+}
