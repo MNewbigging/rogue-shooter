@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { lerp } from 'three/src/math/MathUtils';
 
 import { CameraManager } from './CameraManager';
 import { GameEventListener, GameEventType } from './listeners/GameEventListener';
@@ -18,6 +19,9 @@ export class FirstPersonController {
   private readonly halfPi = Math.PI / 2;
   private moveSpeed = 3;
   private height = 0.2;
+  private targetCameraRot = new THREE.Quaternion();
+  private maxCameraTilt = 10;
+  private friction: number = 0.2; // should be normalized
 
   constructor(
     private cameraManager: CameraManager,
@@ -28,6 +32,8 @@ export class FirstPersonController {
     const capGeom = new THREE.CapsuleGeometry(this.radius, 1, 4, 8);
     this.collider = new THREE.Mesh(capGeom);
     this.collider.name = 'collider';
+    this.cameraManager.camera.position.y += this.height;
+    this.collider.attach(this.cameraManager.camera);
 
     // Debug
     const box = new THREE.Box3().setFromObject(this.collider);
@@ -45,10 +51,10 @@ export class FirstPersonController {
     this.collider.position.set(pos.x, pos.y, pos.z);
 
     // Set camera to collider pos, plus height
-    const camPos = this.collider.position.clone();
-    camPos.y += this.height;
+    //const camPos = this.collider.position.clone();
+    //camPos.y += this.height;
 
-    this.cameraManager.camera.position.set(camPos.x, camPos.y, camPos.z);
+    //this.cameraManager.camera.position.set(camPos.x, camPos.y, camPos.z);
   }
 
   public update(deltaTime: number) {
@@ -58,25 +64,29 @@ export class FirstPersonController {
     this.moveActions(deltaTime);
     // Movement
     this.move();
+
+    this.cameraSway(this.moveSpeed, deltaTime);
   }
 
   private mouseLook() {
     // Mouse movement delta
     const movement = this.inputManager.mouseListener.movement;
     // Current camera rotation
-    this.lookEuler.setFromQuaternion(this.cameraManager.camera.quaternion);
+    this.lookEuler.setFromQuaternion(this.collider.quaternion);
     // Adjust per mouse delta
     this.lookEuler.y -= movement.x * 0.002 * this.lookSpeed;
     this.lookEuler.x -= movement.y * 0.002 * this.lookSpeed;
+
+    this.cameraManager.camera.rotation.x -= movement.y * 0.002 * this.lookSpeed;
     // Avoid gimbal lock
-    this.lookEuler.x = Math.max(
+    this.cameraManager.camera.rotation.x = Math.max(
       this.halfPi - this.maxPolarAngle,
-      Math.min(this.halfPi - this.minPolarAngle, this.lookEuler.x)
+      Math.min(this.halfPi - this.minPolarAngle, this.cameraManager.camera.rotation.x)
     );
     // Update camera rotation
-    this.cameraManager.camera.quaternion.setFromEuler(this.lookEuler);
+    //this.cameraManager.camera.quaternion.setFromEuler(this.lookEuler);
 
-    // update player rotation
+    // update collider rotation
     this.collider.quaternion.setFromEuler(new THREE.Euler(
       0,
       this.lookEuler.y,
@@ -132,8 +142,8 @@ export class FirstPersonController {
     // Fall with gravity
     //this.velocity.y -= 0.01;
 
-    this.velocity.x *= 0.8;
-    this.velocity.z *= 0.8;
+    this.velocity.x *= 1 - this.friction;
+    this.velocity.z *= 1 - this.friction;
 
     // Velocity gives the next position to move to
     const nextPos = this.collider.position.clone().add(this.velocity);
@@ -144,4 +154,10 @@ export class FirstPersonController {
   private onJump = () => {
     this.velocity.y = 0.2;
   };
+
+  private cameraSway(moveSpeed: number, deltaTime: number): void {
+    // we need to add in a local-space animation
+    // the amount of added rotation should be directly tied to movement speed
+
+  }
 }
