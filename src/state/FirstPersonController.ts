@@ -76,17 +76,25 @@ export class FirstPersonController {
     // Update camera rotation
     this.cameraManager.camera.quaternion.setFromEuler(this.lookEuler);
 
+    // update player rotation
+    this.collider.quaternion.setFromEuler(new THREE.Euler(
+      0,
+      this.lookEuler.y,
+      0,
+    ));
+
     // Update facing direction for forward movement
-    this.cameraManager.camera.getWorldDirection(this.direction);
+    this.collider.getWorldDirection(this.direction);
     this.direction.y = 0;
     this.direction.normalize();
+    this.direction.multiplyScalar(-1);
   }
 
   private moveActions(deltaTime: number) {
     const moveSpeed = this.moveSpeed * deltaTime;
 
     // Right direction
-    const rightDir = this.direction.clone().cross(this.cameraManager.camera.up);
+    const rightDir = this.direction.clone().cross(this.collider.up);
 
     // Forward
     if (this.inputManager.takingAction(InputAction.MOVE_FORWARD)) {
@@ -94,13 +102,14 @@ export class FirstPersonController {
 
       // Add forward impulse
       this.velocity.add(moveStep);
-    }
-    // Backward
-    if (this.inputManager.takingAction(InputAction.MOVE_BACKWARD)) {
+    } else if (this.inputManager.takingAction(InputAction.MOVE_BACKWARD)) {
       const moveStep = this.direction.clone().multiplyScalar(-moveSpeed);
 
       // Add backward impulse
       this.velocity.add(moveStep);
+    } else {
+      //const moveStep = this.direction.clone().multiplyScalar(-1).sub(moveSpeed);
+      //this.velocity.add(moveStep);
     }
     // Left
     if (this.inputManager.takingAction(InputAction.STRAFE_LEFT)) {
@@ -108,19 +117,23 @@ export class FirstPersonController {
 
       // Add left impulse
       this.velocity.add(moveStep);
-    }
-    // Right
-    if (this.inputManager.takingAction(InputAction.STRAFE_RIGHT)) {
+    } else if (this.inputManager.takingAction(InputAction.STRAFE_RIGHT)) {
       const moveStep = rightDir.multiplyScalar(moveSpeed);
 
       // Add right impulse
       this.velocity.add(moveStep);
+    } else {
+      //const moveStep = this.direction.clone().multiplyScalar(-1).multiplyScalar(moveSpeed);
+      //this.velocity.add(moveStep);
     }
   }
 
   private move() {
     // Fall with gravity
-    this.velocity.y -= 0.01;
+    //this.velocity.y -= 0.01;
+
+    this.velocity.x *= 0.8;
+    this.velocity.z *= 0.8;
 
     // Velocity gives the next position to move to
     const nextPos = this.collider.position.clone().add(this.velocity);

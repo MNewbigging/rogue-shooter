@@ -48,7 +48,7 @@ export class GameState {
 
     // Move player to spawn point and put collider in the scene
     const spawn = this.roomManager.currentRoom?.playerSpawnPoint;
-    this.playerState.moveTo(new THREE.Vector3(0, 20, 0));
+    this.playerState.moveTo(new THREE.Vector3(0, 2, 0));
     this.roomManager.currentRoom.scene.add(this.playerState.fpsController.collider);
 
     // Test cube
